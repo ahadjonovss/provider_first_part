@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:provider_first_lesson/view_model/main_page_view_model.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -11,10 +13,26 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(),
+      body: Center(
+        child: Consumer<MainPageViewModel>(
+          builder: (context, mainPageViewModel, child) {
+            return Container(
+              child: mainPageViewModel.isLoading?
+                  const CircularProgressIndicator():
+                  mainPageViewModel.cards==null?
+                      Text("Hech nima kelmadi"):
+                      Text(mainPageViewModel.cards![0].bankName)
+              ,
+            );
+
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.download),
-        onPressed: (){},
+        onPressed: (){
+          context.read<MainPageViewModel>().fetchCards();
+        },
       ),
     );
   }

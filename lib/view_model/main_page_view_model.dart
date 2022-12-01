@@ -6,7 +6,7 @@ import '../data/models/card_model.dart';
 class MainPageViewModel extends ChangeNotifier{
 
   bool isLoading=false;
-  late List<CreditCard> cards;
+  List? cards;
 
   fetchCards() async {
     notify(true);
