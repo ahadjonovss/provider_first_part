@@ -1,23 +1,33 @@
-import 'package:http/http.dart' as https;
-import 'package:http/http.dart';
-import 'dart:convert' as convert;
-import '../models/card_model.dart';
-class ApiService {
-  static Future<List> getUserData() async {
-    try {
-      Response response =
-      await https.get(Uri.parse("https://banking-api.free.mockoapp.net/user_cards"));
-      if (response.statusCode == 200) {
-        var jsonResponse =
-        convert.jsonDecode(response.body);
-        return jsonResponse.map((e) => CreditCard.fromJson(e)).toList();
+import 'package:dio/dio.dart';
+import '../models/category_model.dart';
+import '../models/product_model.dart';
+import 'client.dart';
 
-      } else {
-        throw Exception();
+class ApiService extends ApiClient {
+  Future<ProductsModel?> getProducts() async {
+    // Dio dio = Dio();
+
+    try{
+      Response response = await dio.get("${dio.options.baseUrl}/products");
+      if(200 <= response.statusCode! && response.statusCode! < 300){
+        return ProductsModel.fromJson(response.data);
+
       }
-    } catch (e) {
-      print(e.toString());
-      throw Exception(e);
+    }catch(err){
+      print(err.toString());
     }
+  }
+  Future<List<CategoryModel>> getCategories()async{
+    // Dio dio = Dio();
+    try{
+      Response response = await dio.get("${dio.options.baseUrl}/categories");
+      if(response.statusCode == 200){
+        return (response.data as List?)?.map((e) => CategoryModel.fromJson(e)).toList()??[];
+
+      }
+    } catch (err){
+      print(err.toString());
+    }
+    return [];
   }
 }
